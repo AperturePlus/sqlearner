@@ -20,6 +20,10 @@
   </a>
 </p>
 
+<p align="center">
+  <strong>English</strong> | <a href="doc/README_zh.md">中文</a>
+</p>
+
 ---
 
 ## ✨ Features
@@ -38,17 +42,13 @@
 <details>
 <summary>Click to view screenshots</summary>
 
-| Home Page | Tutorial |
-|:---------:|:--------:|
-| ![Home](doc/index.png) | ![Tutorial](doc/tutorial.png) |
+| Home Page | Light Theme |
+|:---------:|:-----------:|
+| ![Home](doc/home.png) | ![Light](doc/light.png) |
 
-| Level Challenges | SQL Playground |
-|:----------------:|:--------------:|
-| ![Levels](doc/levels.png) | ![Playground](doc/sql-playground.png) |
-
-| Helper Panel | Custom Levels |
-|:------------:|:-------------:|
-| ![Helper](doc/helpboard.png) | ![Custom](doc/customLevel.png) |
+| Dark Theme | SQL Playground |
+|:----------:|:--------------:|
+| ![Dark](doc/dark.png) | ![Playground](doc/playground.png) |
 
 </details>
 
