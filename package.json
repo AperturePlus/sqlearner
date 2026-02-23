@@ -101,10 +101,11 @@
     "vue-router": "4"
   },
   "devDependencies": {
+    "@types/node": "^22.0.0",
     "@types/sql.js": "^1.4.3",
     "@typescript-eslint/eslint-plugin": "^5.23.0",
     "@typescript-eslint/parser": "^5.23.0",
-    "@vitejs/plugin-vue": "^3.0.3",
+    "@vitejs/plugin-vue": "^6.0.4",
     "concurrently": "^8.2.2",
     "cross-env": "^7.0.3",
     "electron": "^31.0.2",
@@ -121,8 +122,8 @@
     "prettier": "^2.7.1",
     "sharp": "^0.34.5",
     "typescript": "^5.9.3",
-    "vite": "^3.0.7",
-    "vue-tsc": "^0.39.5",
+    "vite": "^7.3.1",
+    "vue-tsc": "^3.2.5",
     "wait-on": "^7.2.0"
   }
 }
