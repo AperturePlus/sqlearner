@@ -271,7 +271,9 @@ const onSubmit = (
   result.value = res;
   answerResult.value = answerRes;
   errorMsgRef.value = errorMsg;
-  resultStatus.value = checkResult(res, answerRes);
+  resultStatus.value = checkResult(res, answerRes, {
+    keepRowOrder: Boolean(level.value.keepRowOrder),
+  });
   // 执行后广播最新上下文
   broadcastContext();
 };
