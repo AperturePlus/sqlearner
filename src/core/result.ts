@@ -22,7 +22,10 @@ export const RESULT_STATUS_INFO_MAP = {
  * 将查询结果按列名排序归一化，返回 { columns, values }
  * 同时将行按照全部字段做字典序排序，消除行顺序差异
  */
-const normalizeResult = (queryResult: QueryExecResult) => {
+const normalizeResult = (
+  queryResult: QueryExecResult,
+  options?: { keepRowOrder?: boolean }
+) => {
   const { columns, values } = queryResult;
 
   // 1. 按列名排序，得到新的索引映射
@@ -33,16 +36,18 @@ const normalizeResult = (queryResult: QueryExecResult) => {
   // 2. 按新的列顺序重排每行数据
   const reorderedValues = values.map((row) => indexed.map((x) => row[x.i]));
 
-  // 3. 按行内容字典序排序，消除行顺序差异
-  reorderedValues.sort((a, b) => {
-    for (let i = 0; i < a.length; i++) {
-      const va = a[i] == null ? "" : String(a[i]);
-      const vb = b[i] == null ? "" : String(b[i]);
-      if (va < vb) return -1;
-      if (va > vb) return 1;
-    }
-    return 0;
-  });
+  // 3. 默认按行内容字典序排序，消除行顺序差异
+  if (!options?.keepRowOrder) {
+    reorderedValues.sort((a, b) => {
+      for (let i = 0; i < a.length; i++) {
+        const va = a[i] == null ? "" : String(a[i]);
+        const vb = b[i] == null ? "" : String(b[i]);
+        if (va < vb) return -1;
+        if (va > vb) return 1;
+      }
+      return 0;
+    });
+  }
 
   return { columns: sortedColumns, values: reorderedValues };
 };
@@ -54,7 +59,8 @@ const normalizeResult = (queryResult: QueryExecResult) => {
  */
 export const checkResult = (
   result: QueryExecResult[],
-  answerResult: QueryExecResult[]
+  answerResult: QueryExecResult[],
+  options?: { keepRowOrder?: boolean }
 ) => {
   if (!result?.length || !answerResult?.length) {
     return RESULT_STATUS_ENUM.ERROR;
@@ -71,8 +77,8 @@ export const checkResult = (
       return RESULT_STATUS_ENUM.ERROR;
     }
 
-    const normResult = normalizeResult(currentResult);
-    const normAnswer = normalizeResult(currentAnswer);
+    const normResult = normalizeResult(currentResult, options);
+    const normAnswer = normalizeResult(currentAnswer, options);
 
     // 列名需要一致（已归一化排序 + 小写）
     if (

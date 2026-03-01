@@ -16,6 +16,8 @@ interface LevelType {
   hint?: string;
   // 答案 SQL
   answer: string;
+  // 是否要求结果行顺序与标准答案一致（用于需要 ORDER BY 的题目）
+  keepRowOrder?: boolean;
   // 类型（主线或自定义）
   type: "main" | "custom";
   // 难度等级（1-简单，2-中等，3-困难）
