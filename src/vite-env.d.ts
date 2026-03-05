@@ -64,7 +64,18 @@ declare module "*.vue" {
 interface ElectronBridge {
   platform?: string;
   getSystemLocale?: () => Promise<string>;
+  checkForUpdates?: () => Promise<UpdateCheckResult>;
+  openExternal?: (url: string) => Promise<boolean>;
   setWindowTheme?: (theme: "light" | "dark") => void;
+}
+
+interface UpdateCheckResult {
+  status: "update-available" | "up-to-date" | "error" | "checking";
+  currentVersion: string;
+  latestVersion?: string;
+  releaseUrl?: string;
+  releaseName?: string;
+  message?: string;
 }
 
 interface Window {

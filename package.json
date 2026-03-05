@@ -1,7 +1,7 @@
 {
   "name": "lite-sqlearner",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.2.0",
   "description": "An interactive, gamified SQL learning desktop application",
   "author": "Lite-SQLearner Team",
   "main": "dist-electron/main.js",
