@@ -24,15 +24,57 @@
             }}</a-menu-item>
           </a-menu>
         </a-col>
-        <a-col flex="300px" class="toolbar-col">
+        <a-col flex="380px" class="toolbar-col">
           <a-space :size="12" class="toolbar-space">
+            <a-button
+              v-if="showUpdateButton"
+              size="small"
+              class="update-button"
+              :loading="isCheckingUpdates"
+              @click="handleCheckForUpdates"
+            >
+              {{ checkUpdateLabel }}
+            </a-button>
             <span class="language-label">
-              <svg class="language-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <circle cx="12" cy="12" r="9.5" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M12 2.5C12 2.5 8.5 7 8.5 12s3.5 9.5 3.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M12 2.5C12 2.5 15.5 7 15.5 12s-3.5 9.5-3.5 9.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M2.5 12h19" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
-                <path d="M3.5 8h17M3.5 16h17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="1 0"/>
+              <svg
+                class="language-icon"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                aria-hidden="true"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="9.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                />
+                <path
+                  d="M12 2.5C12 2.5 8.5 7 8.5 12s3.5 9.5 3.5 9.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M12 2.5C12 2.5 15.5 7 15.5 12s-3.5 9.5-3.5 9.5"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M2.5 12h19"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                />
+                <path
+                  d="M3.5 8h17M3.5 16h17"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-dasharray="1 0"
+                />
               </svg>
               {{ t("app.language.label") }}
             </span>
@@ -67,7 +109,8 @@
 </template>
 
 <script setup lang="ts">
-import { computed, defineAsyncComponent, watch } from "vue";
+import { computed, defineAsyncComponent, ref, watch } from "vue";
+import { message } from "ant-design-vue";
 import { useRoute, useRouter } from "vue-router";
 import enUS from "ant-design-vue/es/locale/en_US";
 import zhCN from "ant-design-vue/es/locale/zh_CN";
@@ -85,6 +128,7 @@ const globalStore = useGlobalStore();
 const { t, locale } = useAppI18n();
 const electronBridge = (window as Window).electron;
 const useCustomTitleBar = electronBridge?.platform === "win32";
+const isCheckingUpdates = ref(false);
 
 const selectedKeys = computed(() => {
   if (route.path === "/" || route.path.startsWith("/learn")) {
@@ -107,6 +151,12 @@ const showAISidebar = computed(() => {
 });
 const isDark = computed(() => globalStore.theme === "dark");
 const antLocale = computed(() => (locale.value === "en-US" ? enUS : zhCN));
+const showUpdateButton = computed(() =>
+  Boolean(electronBridge?.checkForUpdates)
+);
+const checkUpdateLabel = computed(() =>
+  locale.value === "zh-CN" ? "检查更新" : "Check Updates"
+);
 const languagePreference = computed<LanguagePreference>({
   get: () => globalStore.languagePreference,
   set: (value) => globalStore.setLanguagePreference(value),
@@ -129,6 +179,62 @@ const doClickMenu = ({ key }: any) => {
 
 const handleThemeChange = (checked: boolean) => {
   globalStore.theme = checked ? "dark" : "light";
+};
+
+const handleCheckForUpdates = async () => {
+  if (!electronBridge?.checkForUpdates || isCheckingUpdates.value) {
+    return;
+  }
+
+  isCheckingUpdates.value = true;
+  try {
+    const result = await electronBridge.checkForUpdates();
+    const isZh = locale.value === "zh-CN";
+
+    if (result.status === "up-to-date") {
+      message.success(
+        isZh
+          ? `当前已是最新版本（v${result.currentVersion}）`
+          : `You're up to date (v${result.currentVersion})`
+      );
+      return;
+    }
+
+    if (result.status === "update-available") {
+      message.info(
+        isZh
+          ? `检测到新版本 v${result.latestVersion}，已弹出下载提示`
+          : `New version v${result.latestVersion} found. Download prompt shown.`
+      );
+      return;
+    }
+
+    if (result.status === "checking") {
+      message.info(
+        isZh
+          ? "正在进行更新检查，请稍后重试"
+          : "Update check is already running. Please try again shortly."
+      );
+      return;
+    }
+
+    message.error(
+      isZh
+        ? `检查更新失败：${result.message || "未知错误"}`
+        : `Failed to check for updates: ${result.message || "Unknown error"}`
+    );
+  } catch (error) {
+    const isZh = locale.value === "zh-CN";
+    const errorMessage =
+      error instanceof Error ? error.message : "Unknown error";
+    message.error(
+      isZh
+        ? `检查更新失败：${errorMessage}`
+        : `Failed to check for updates: ${errorMessage}`
+    );
+  } finally {
+    isCheckingUpdates.value = false;
+  }
 };
 
 watch(
@@ -214,6 +320,10 @@ watch(
 
 .toolbar-space {
   align-items: center;
+}
+
+.update-button {
+  white-space: nowrap;
 }
 
 :deep(.ant-menu) {
