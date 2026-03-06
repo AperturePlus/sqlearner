@@ -123,6 +123,3 @@ lite-sqlearner/
 4. 推送到分支（`git push origin feature/amazing-feature`）
 5. 发起 Pull Request
 
-## 📄 开源协议
-
-本项目为开源项目，详情请查看 [LICENSE](../LICENSE) 文件。
