@@ -113,6 +113,24 @@ lite-sqlearner/
 └── package.json
 ```
 
+## 🧭 Next Direction
+
+The next phase of Lite-SQLearner focuses on making learning paths smarter, feedback clearer, and practice content richer:
+
+- **Adaptive learning path** — Recommend the next level based on pass/fail history and common mistakes
+- **Stronger answer diagnostics** — Explain *why* a query is wrong (syntax, logic, edge cases), not only pass/fail
+- **Content expansion** — Add intermediate/advanced topics (window functions, CTEs, query optimization, transactions)
+- **Practice quality tooling** — Add automated checks for level metadata, expected answers, and tutorial consistency
+- **Offline-first learning** — Improve local data persistence, progress export/import, and reliability without network
+
+## 🔧 Improvement Priorities
+
+If you want to contribute, these areas have the highest impact:
+
+1. **Learning experience**: richer hints, clearer error messaging, and progressive challenge design  
+2. **AI assistant quality**: prompt safety, model fallback behavior, and deterministic learning-focused responses  
+3. **Engineering quality**: add CI lint/test coverage, stabilize packaging workflow, and reduce regressions in releases
+
 ## 🤝 Contributing
 
 Contributions are welcome! Feel free to open issues or submit pull requests.
