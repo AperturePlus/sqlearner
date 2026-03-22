@@ -18,6 +18,9 @@
   <a href="https://github.com/AperturePlus/lite-sqlearner/blob/main/LICENSE">
     <img src="https://img.shields.io/github/license/AperturePlus/lite-sqlearner?style=flat-square" alt="开源协议" />
   </a>
+  <a href="https://linux.do">
+    <img src="https://img.shields.io/badge/社区-linux.do-2ea44f?style=flat-square" alt="社区 linux.do" />
+  </a>
 </p>
 
 <p align="center">
